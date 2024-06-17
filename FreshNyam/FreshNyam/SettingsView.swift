@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var itemManager: ItemManager
     @State private var newCategory = ""
+    @AppStorage("appAppearance") var appAppearance: AppAppearance = .system
+
     
     var body: some View {
         NavigationView {
@@ -26,18 +28,18 @@ struct SettingsView: View {
                         }
                     }
                 }
-                Section(header: Text("보기 방식")) { // 추가된 부분
-                    Picker("보기 방식", selection: $itemManager.viewMode) {
-                        ForEach(ViewMode.allCases, id: \.self) { mode in
-                            Text(mode.rawValue).tag(mode)
+                Section(header: Text("보기 설정")) {
+                                Picker("모드 선택", selection: $appAppearance) {
+                                    ForEach(AppAppearance.allCases) { appearance in
+                                        Text(appearance.rawValue).tag(appearance)
+                                    }
+                                }
+                                .pickerStyle(SegmentedPickerStyle())
+                            }
                         }
+                        .navigationBarTitle("설정", displayMode: .inline)
                     }
-                    .pickerStyle(SegmentedPickerStyle())
                 }
-            }
-            .navigationBarTitle("설정", displayMode: .inline)
-        }
-    }
 
     private func deleteCategory(at offsets: IndexSet) {
         itemManager.deleteCategory(at: offsets)

@@ -40,11 +40,11 @@ struct AddItemView: View {
                         }
                     }
                     .onAppear {
-                                            // 처음 화면이 로드될 때 기본값 설정
-                                            if category.isEmpty, let firstCategory = itemManager.categories.first {
-                                                category = firstCategory
-                                            }
-                                        }
+                        // 처음 화면이 로드될 때 기본값 설정
+                        if category.isEmpty, let firstCategory = itemManager.categories.first {
+                            category = firstCategory
+                        }
+                    }
                 }
                 Section(header: Text("아이콘 선택")) {
                     Button(action: {
@@ -82,65 +82,6 @@ struct AddItemView: View {
             })
             .sheet(isPresented: $showImagePicker) {
                 ImagePickerView(selectedImageName: $selectedImageName, images: filteredImages, searchQuery: $searchQuery)
-            }
-        }
-    }
-}
-
-struct ImagePickerView: View {
-    @Binding var selectedImageName: String
-    var images: [String: [String]]
-    @Binding var searchQuery: String
-    @Environment(\.presentationMode) var presentationMode
-
-    var body: some View {
-        NavigationView {
-            VStack {
-                TextField("검색", text: $searchQuery)
-                    .padding(10)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
-                    .padding(.horizontal)
-                
-                ScrollView {
-                    ForEach(images.keys.sorted(), id: \.self) { category in
-                        Section(header: Text(category)) {
-                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 20) {
-                                ForEach(images[category]!, id: \.self) { imageName in
-                                    VStack {
-                                        Image(imageName)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(height: 50)
-                                            .padding()
-                                            .background(self.selectedImageName == imageName ? Color.gray.opacity(0.3) : Color.clear)
-                                            .cornerRadius(8)
-                                            .onTapGesture {
-                                                self.selectedImageName = imageName
-                                            }
-                                        Text(imageName)
-                                            .font(.caption)
-                                            .foregroundColor(.black)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .padding()
-                }
-                .navigationBarTitle("아이콘 선택", displayMode: .inline)
-                .navigationBarItems(
-                    leading: Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Text("취소")
-                    },
-                    trailing: Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Text("확인")
-                    }
-                )
             }
         }
     }

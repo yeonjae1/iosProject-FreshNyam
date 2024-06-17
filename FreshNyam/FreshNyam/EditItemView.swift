@@ -6,6 +6,7 @@ struct EditItemView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var showImagePicker = false
     @State private var searchQuery = ""
+    @State private var selectedImageName: String = ""
     
     var body: some View {
         NavigationView {
@@ -28,6 +29,7 @@ struct EditItemView: View {
                 }
                 Section(header: Text("아이콘 선택")) {
                     Button(action: {
+                        selectedImageName = item.imageName
                         showImagePicker.toggle()
                     }) {
                         HStack {
@@ -52,7 +54,7 @@ struct EditItemView: View {
                 }
                 Section(header: Text("소비기한")) {
                     DatePicker("소비기한", selection: $item.expiryDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "ko_KR")) // 로케일을 한국어로 설정
+                        .environment(\.locale, Locale(identifier: "ko_KR"))
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .onChange(of: item.expiryDate) { _ in
                             itemManager.updateItem(item)
@@ -60,7 +62,7 @@ struct EditItemView: View {
                 }
                 Section(header: Text("추가된 날짜")) {
                     DatePicker("추가된 날짜", selection: $item.addedDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "ko_KR")) // 로케일을 한국어로 설정
+                        .environment(\.locale, Locale(identifier: "ko_KR"))
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .onChange(of: item.addedDate) { _ in
                             itemManager.updateItem(item)
@@ -69,18 +71,19 @@ struct EditItemView: View {
             }
             .navigationBarTitle("수정하기", displayMode: .inline)
             .navigationBarItems(trailing: Button(action: {
+                item.imageName = selectedImageName
                 itemManager.updateItem(item)
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text("저장")
             })
             .sheet(isPresented: $showImagePicker) {
-                ImagePickerView(selectedImageName: $item.imageName, images: itemManager.images, searchQuery: $searchQuery)
-                    .onChange(of: item.imageName) { _ in
+                ImagePickerView(selectedImageName: $selectedImageName, images: itemManager.images, searchQuery: $searchQuery)
+                    .onDisappear {
+                        item.imageName = selectedImageName
                         itemManager.updateItem(item)
                     }
             }
         }
     }
 }
-

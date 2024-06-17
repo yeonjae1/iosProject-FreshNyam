@@ -44,7 +44,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 
         
-        // 강제로 언어를 한국어로 설정
+        // 언어를 한국어로 설정
         UserDefaults.standard.set(["ko"], forKey: "AppleLanguages")
         UserDefaults.standard.synchronize()
         return true

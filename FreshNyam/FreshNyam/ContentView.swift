@@ -3,6 +3,7 @@ import UserNotifications
 
 struct ContentView: View {
     @ObservedObject var itemManager = ItemManager()
+    @AppStorage("appAppearance") var appAppearance: AppAppearance = .system
     @State private var showAddItemView = false
     @State private var showSearchBar = false
     @State private var searchText = ""
@@ -61,12 +62,13 @@ struct ContentView: View {
                     addItemForTesting()
                 }
                 .onChange(of: itemManager.viewMode) { newValue in
-                    itemManager.saveViewModel()
+                    itemManager.saveViewMode()
                 }
                 .onAppear {
-                    checkNotificationAuthorization()
+                    requestNotificationAuthorization()
                 }
             }
+            .preferredColorScheme(appAppearance.colorScheme)
         }
     }
 
@@ -76,16 +78,14 @@ struct ContentView: View {
         itemManager.addItem(name: itemName, category: "테스트", storage: .fridge, expiryDate: expiryDate)
     }
 
-    func checkNotificationAuthorization() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            if settings.authorizationStatus != .authorized {
-                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-                    if granted {
-                        print("알림 권한이 허용되었습니다.")
-                    } else {
-                        print("알림 권한이 거부되었습니다.")
-                    }
-                }
+    func requestNotificationAuthorization() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("Notification authorization request error: \(error.localizedDescription)")
+            } else if granted {
+                print("Notification authorization granted")
+            } else {
+                print("Notification authorization denied")
             }
         }
     }
@@ -94,8 +94,9 @@ struct ContentView: View {
         HStack {
             TextField("검색", text: $searchText)
                 .padding(10)
-                .background(Color.gray.opacity(0.2))
+                .background(Color(.systemGray5))
                 .cornerRadius(8)
+                .foregroundColor(Color.primary)
             Button(action: {
                 withAnimation {
                     showSearchBar = false
@@ -170,10 +171,20 @@ struct ContentView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 50)
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 5))
             }
             VStack(alignment: .leading, spacing: 5) {
-                Text(item.name)
-                    .font(.subheadline) // 글자 크기를 줄임
+                HStack {
+                    Text(item.name)
+                        .font(.system(size:18))
+                    Text("D-\(daysUntilExpiry(expiryDate: item.expiryDate))")
+                        .font(.caption)
+                        .foregroundColor(
+                            Color(UIColor { traitCollection in
+                                traitCollection.userInterfaceStyle == .dark ? .systemGray3 : .gray
+                            })
+                        )
+                }
                 Text("추가된 날짜: \(itemDateFormatter.string(from: item.addedDate))")
                     .font(.caption)
                 Text("소비기한: \(itemDateFormatter.string(from: item.expiryDate))")
@@ -183,9 +194,12 @@ struct ContentView: View {
             Spacer()
         }
         .padding()
-        .background(Color.white)
+        .background(
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark ? .systemGray4 : .white
+            })
+        )
         .cornerRadius(15)
-        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
         .contextMenu {
             Button(action: {
                 selectedItem = item
@@ -262,18 +276,24 @@ struct ContentView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 50)
             }
-            Text(item.name)
-                .font(.headline) // 글자 크기 조정
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
+            HStack {
+                Text(item.name)
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            
+            }
             Text("D-\(daysUntilExpiry(expiryDate: item.expiryDate))")
                 .font(.caption)
                 .foregroundColor(daysUntilExpiry(expiryDate: item.expiryDate) <= 3 ? .red : .primary)
         }
         .padding()
-        .background(Color.white)
+        .background(
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark ? .systemGray4 : .white
+            })
+        )
         .cornerRadius(15)
-        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5)
         .contextMenu {
             Button(action: {
                 selectedItem = item

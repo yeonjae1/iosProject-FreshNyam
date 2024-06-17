@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B7878EA22C1FC04100316EE4 /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7878EA12C1FC04100316EE4 /* AppAppearance.swift */; };
+		B7878EA42C1FCC8E00316EE4 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7878EA32C1FCC8E00316EE4 /* ImagePickerView.swift */; };
 		B78835562C1DB11F00D24CB7 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78835552C1DB11F00D24CB7 /* Item.swift */; };
 		B7C797AF2C1C30B400A45639 /* FreshNyamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C797AE2C1C30B400A45639 /* FreshNyamApp.swift */; };
 		B7C797B12C1C30B400A45639 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C797B02C1C30B400A45639 /* ContentView.swift */; };
@@ -18,8 +20,25 @@
 		B7C797C52C1C77BC00A45639 /* EditItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C797C42C1C77BC00A45639 /* EditItemView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		B78835732C1EBEBD00D24CB7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		B7878EA12C1FC04100316EE4 /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
+		B7878EA32C1FCC8E00316EE4 /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		B78835552C1DB11F00D24CB7 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		B788355D2C1EBEBB00D24CB7 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		B788355F2C1EBEBB00D24CB7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B7C797AB2C1C30B400A45639 /* FreshNyam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FreshNyam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7C797AE2C1C30B400A45639 /* FreshNyamApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshNyamApp.swift; sourceTree = "<group>"; };
 		B7C797B02C1C30B400A45639 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -42,10 +61,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B788355C2C1EBEBB00D24CB7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B788355D2C1EBEBB00D24CB7 /* WidgetKit.framework */,
+				B788355F2C1EBEBB00D24CB7 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B7C797A22C1C30B400A45639 = {
 			isa = PBXGroup;
 			children = (
 				B7C797AD2C1C30B400A45639 /* FreshNyam */,
+				B788355C2C1EBEBB00D24CB7 /* Frameworks */,
 				B7C797AC2C1C30B400A45639 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,11 +90,13 @@
 		B7C797AD2C1C30B400A45639 /* FreshNyam */ = {
 			isa = PBXGroup;
 			children = (
+				B7878EA12C1FC04100316EE4 /* AppAppearance.swift */,
 				B7C797AE2C1C30B400A45639 /* FreshNyamApp.swift */,
 				B7C797B02C1C30B400A45639 /* ContentView.swift */,
 				B7C797C42C1C77BC00A45639 /* EditItemView.swift */,
 				B7C797C22C1C72C300A45639 /* SettingsView.swift */,
 				B7C797C02C1C33F100A45639 /* AddItemView.swift */,
+				B7878EA32C1FCC8E00316EE4 /* ImagePickerView.swift */,
 				B7C797BE2C1C33D300A45639 /* ItemManager.swift */,
 				B78835552C1DB11F00D24CB7 /* Item.swift */,
 				B7C797B22C1C30B500A45639 /* Assets.xcassets */,
@@ -92,6 +123,7 @@
 				B7C797A72C1C30B400A45639 /* Sources */,
 				B7C797A82C1C30B400A45639 /* Frameworks */,
 				B7C797A92C1C30B400A45639 /* Resources */,
+				B78835732C1EBEBD00D24CB7 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -156,9 +188,11 @@
 				B7C797BF2C1C33D300A45639 /* ItemManager.swift in Sources */,
 				B7C797C32C1C72C300A45639 /* SettingsView.swift in Sources */,
 				B7C797AF2C1C30B400A45639 /* FreshNyamApp.swift in Sources */,
+				B7878EA42C1FCC8E00316EE4 /* ImagePickerView.swift in Sources */,
 				B78835562C1DB11F00D24CB7 /* Item.swift in Sources */,
 				B7C797C12C1C33F100A45639 /* AddItemView.swift in Sources */,
 				B7C797C52C1C77BC00A45639 /* EditItemView.swift in Sources */,
+				B7878EA22C1FC04100316EE4 /* AppAppearance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
