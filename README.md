@@ -1,8 +1,8 @@
 # iosProject - FreshNyam
-
+유튜브 링크 : https://youtu.be/uBlmn1OVenw
 ### 프레시냠
 
-냉장고 정리 어플
+🍋냉장고 정리 어플🧊
 
 ### 주요 기능
 
