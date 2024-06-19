@@ -6,7 +6,27 @@ struct EditItemView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var showImagePicker = false
     @State private var searchQuery = ""
-    @State private var selectedImageName: String = ""
+    @State private var selectedImageName: String
+    
+    init(itemManager: ItemManager, item: Item) {
+        self.itemManager = itemManager
+        self.item = item
+        _selectedImageName = State(initialValue: item.imageName)
+    }
+    
+    var filteredImages: [String: [String]] {
+        if searchQuery.isEmpty {
+            return itemManager.images
+        } else {
+            for (key, value) in itemManager.images {
+                let filteredValues = value.filter { $0.contains(searchQuery) }
+                if !filteredValues.isEmpty {
+                    filtered[key] = filteredValues
+                }
+            }
+            return filtered
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -29,12 +49,11 @@ struct EditItemView: View {
                 }
                 Section(header: Text("아이콘 선택")) {
                     Button(action: {
-                        selectedImageName = item.imageName
                         showImagePicker.toggle()
                     }) {
                         HStack {
-                            Text(item.imageName.isEmpty ? "아이콘 선택" : item.imageName)
-                                .foregroundColor(item.imageName.isEmpty ? .gray : .primary)
+                            Text(selectedImageName.isEmpty ? "아이콘 선택" : selectedImageName)
+                                .foregroundColor(selectedImageName.isEmpty ? .gray : .primary)
                             Spacer()
                             Image(systemName: "chevron.right")
                                 .foregroundColor(.gray)
@@ -78,7 +97,7 @@ struct EditItemView: View {
                 Text("저장")
             })
             .sheet(isPresented: $showImagePicker) {
-                ImagePickerView(selectedImageName: $selectedImageName, images: itemManager.images, searchQuery: $searchQuery)
+                ImagePickerView(selectedImageName: $selectedImageName, images: filteredImages, searchQuery: $searchQuery)
                     .onDisappear {
                         item.imageName = selectedImageName
                         itemManager.updateItem(item)

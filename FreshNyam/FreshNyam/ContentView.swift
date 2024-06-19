@@ -14,6 +14,9 @@ struct ContentView: View {
     @State private var showEditItemView = false
     @State private var showDeleteAlert = false
     @State private var itemToDelete: Item?
+    @State private var showShareSheet = false
+    @State private var shareURL: URL?
+    @State private var showDocumentPicker = false
 
     var body: some View {
         NavigationView {
@@ -21,9 +24,9 @@ struct ContentView: View {
                 if showSearchBar {
                     searchBar
                 }
-                
+
                 storagePicker
-                
+
                 Group {
                     if itemManager.viewMode == .grid {
                         itemListGrid
@@ -58,24 +61,40 @@ struct ContentView: View {
                         secondaryButton: .cancel(Text("취소"))
                     )
                 }
-                Button("테스트 아이템 추가") {
+                /*Button("테스트 아이템 추가") {
                     addItemForTesting()
-                }
+                }*/
                 .onChange(of: itemManager.viewMode) { newValue in
                     itemManager.saveViewMode()
                 }
                 .onAppear {
                     requestNotificationAuthorization()
                 }
+                .sheet(isPresented: $showShareSheet, onDismiss: {
+                    shareURL = nil
+                }) {
+                    if let shareURL = shareURL {
+                        ShareSheet(activityItems: [shareURL])
+                    }
+                }
+                .sheet(isPresented: $showDocumentPicker) {
+                    DocumentPicker { url in
+                        if let url = url {
+                            itemManager.importItems(from: url)
+                        }
+                    }
+                }
             }
             .preferredColorScheme(appAppearance.colorScheme)
         }
     }
 
+
     func addItemForTesting() {
-        let itemName = "테스트 아이템"
-        let expiryDate = Date().addingTimeInterval(60 * 2) // 현재 시간으로부터 2분 후
-        itemManager.addItem(name: itemName, category: "테스트", storage: .fridge, expiryDate: expiryDate)
+        let itemName = "토마토"
+        let expiryDate = Date().addingTimeInterval(40)
+        itemManager.addItem(name: itemName, category: "채소", storage: .fridge, expiryDate: expiryDate, imageName: "토마토")
+        
     }
 
     func requestNotificationAuthorization() {
@@ -90,6 +109,72 @@ struct ContentView: View {
         }
     }
     
+    //왼쪽 상단 메뉴바
+    var leadingNavigationBarItems: some View {
+        Menu {
+            Button(action: {
+                withAnimation {
+                    showSearchBar.toggle()
+                }
+            }) {
+                Label("검색", systemImage: "magnifyingglass")
+            }
+            Button(action: {
+                showSettingsView = true
+            }) {
+                Label("설정", systemImage: "gearshape")
+            }
+            Picker("보기 방식", selection: $itemManager.viewMode) {
+                ForEach(ViewMode.allCases, id: \.self) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            Button(action: {
+                if let url = itemManager.exportItems() {
+                    shareURL = url
+                    showShareSheet = true
+                }
+            }) {
+                Label("공유하기", systemImage: "square.and.arrow.up")
+            }
+            Button(action: {
+                showDocumentPicker = true
+            }) {
+                Label("불러오기", systemImage: "square.and.arrow.down")
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+        }
+    }
+
+    var sortMenu: some View {
+        Menu {
+            Button(action: { sortOrder = .name }) {
+                Label("이름순", systemImage: "textformat")
+            }
+            Button(action: { sortOrder = .expiryDate }) {
+                Label("D-Day 순", systemImage: "calendar")
+            }
+            Button(action: { sortOrder = .category }) {
+                Label("카테고리순", systemImage: "folder")
+            }
+        } label: {
+            Label("정렬", systemImage: "arrow.up.arrow.down")
+                .labelStyle(IconOnlyLabelStyle())
+        }
+        .padding(.leading)
+    }
+
+    //아이템 추가 버튼
+    var addButton: some View {
+        Button(action: {
+            showAddItemView.toggle()
+        }) {
+            Image(systemName: "plus")
+        }
+    }
+    
+//검색
     var searchBar: some View {
         HStack {
             TextField("검색", text: $searchText)
@@ -109,7 +194,8 @@ struct ContentView: View {
         }
         .padding(.horizontal)
     }
-    
+
+    //보관 장소 선택
     var storagePicker: some View {
         HStack {
             Picker("보관 장소", selection: $selectedStorage) {
@@ -118,14 +204,15 @@ struct ContentView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            
+
             Spacer()
-            
+
             sortMenu
         }
         .padding(.horizontal)
     }
-    
+
+    //아이템 그리드 형태로
     var itemListGrid: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
@@ -145,7 +232,8 @@ struct ContentView: View {
             .padding()
         }
     }
-    
+
+    //아이템 리스트 형태로
     var itemListList: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
@@ -163,7 +251,8 @@ struct ContentView: View {
             .padding()
         }
     }
-    
+
+    //아이템 리스트 ui
     func itemRow(for item: Item) -> some View {
         HStack {
             if let image = UIImage(named: item.imageName) {
@@ -176,20 +265,23 @@ struct ContentView: View {
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
                     Text(item.name)
-                        .font(.system(size:18))
-                    Text("D-\(daysUntilExpiry(expiryDate: item.expiryDate))")
+                        .font(.system(size:16))
+                        .bold()
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Text(expiryDateText(expiryDate: item.expiryDate))
                         .font(.caption)
                         .foregroundColor(
+                            daysUntilExpiry(expiryDate: item.expiryDate) <= 3 ? .red :
                             Color(UIColor { traitCollection in
-                                traitCollection.userInterfaceStyle == .dark ? .systemGray3 : .gray
+                                traitCollection.userInterfaceStyle == .dark ? .white : .systemGray
                             })
                         )
                 }
-                Text("추가된 날짜: \(itemDateFormatter.string(from: item.addedDate))")
+                Text("\(itemDateFormatter.string(from: item.addedDate)) ~ \(itemDateFormatter.string(from: item.expiryDate))")
                     .font(.caption)
-                Text("소비기한: \(itemDateFormatter.string(from: item.expiryDate))")
-                    .font(.caption)
-                    .foregroundColor(daysUntilExpiry(expiryDate: item.expiryDate) <= 3 ? .red : .primary)
+                    .foregroundColor(.gray)
+               
             }
             Spacer()
         }
@@ -218,56 +310,9 @@ struct ContentView: View {
         }
     }
 
-    var leadingNavigationBarItems: some View {
-        Menu {
-            Button(action: {
-                withAnimation {
-                    showSearchBar.toggle()
-                }
-            }) {
-                Label("검색", systemImage: "magnifyingglass")
-            }
-            Button(action: {
-                showSettingsView = true
-            }) {
-                Label("설정", systemImage: "gearshape")
-            }
-            Picker("보기 방식", selection: $itemManager.viewMode) {
-                ForEach(ViewMode.allCases, id: \.self) { mode in
-                    Text(mode.rawValue).tag(mode)
-                }
-            }
-        } label: {
-            Image(systemName: "ellipsis")
-        }
-    }
     
-    var sortMenu: some View {
-        Menu {
-            Button(action: { sortOrder = .name }) {
-                Label("이름순", systemImage: "textformat")
-            }
-            Button(action: { sortOrder = .expiryDate }) {
-                Label("D-Day 순", systemImage: "calendar")
-            }
-            Button(action: { sortOrder = .category }) {
-                Label("카테고리순", systemImage: "folder")
-            }
-        } label: {
-            Label("정렬", systemImage: "arrow.up.arrow.down")
-                .labelStyle(IconOnlyLabelStyle())
-        }
-        .padding(.leading)
-    }
-    
-    var addButton: some View {
-        Button(action: {
-            showAddItemView.toggle()
-        }) {
-            Image(systemName: "plus")
-        }
-    }
-    
+
+    //아이템 카드 ui
     func itemCard(for item: Item) -> some View {
         VStack(spacing: 10) {
             if let image = UIImage(named: item.imageName) {
@@ -278,12 +323,14 @@ struct ContentView: View {
             }
             HStack {
                 Text(item.name)
-                    .font(.headline)
+                    .font(.system(size: 15))
+                    .bold()
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
-            
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
-            Text("D-\(daysUntilExpiry(expiryDate: item.expiryDate))")
+            Text(expiryDateText(expiryDate: item.expiryDate))
                 .font(.caption)
                 .foregroundColor(daysUntilExpiry(expiryDate: item.expiryDate) <= 3 ? .red : .primary)
         }
@@ -311,33 +358,33 @@ struct ContentView: View {
             }
         }
     }
-    
+ 
     var groupedCategories: [String] {
         Array(groupedItems.keys).sorted()
     }
-    
+
     var groupedItems: [String: [Item]] {
         Dictionary(grouping: filteredItems(), by: { $0.category })
     }
-    
+
     func filteredItems() -> [Item] {
         let items = itemManager.groupedItems[selectedStorage] ?? []
         return items.filter { item in
             searchText.isEmpty || item.name.contains(searchText)
         }.sorted(by: sortOrder)
     }
-    
+
     func filteredItems(for category: String) -> [Item] {
         groupedItems[category] ?? []
     }
-    
+
     func daysUntilExpiry(expiryDate: Date) -> Int {
         let calendar = Calendar.current
         let currentDate = Date()
         let components = calendar.dateComponents([.day], from: currentDate, to: expiryDate)
         return components.day ?? 0
     }
-    
+
     func expiryDateText(expiryDate: Date) -> String {
         let days = daysUntilExpiry(expiryDate: expiryDate)
         if days >= 0 {
@@ -346,7 +393,7 @@ struct ContentView: View {
             return "D+\(-days)"
         }
     }
-    
+
     func deleteItem(item: Item) {
         if let index = itemManager.items.firstIndex(where: { $0.id == item.id }) {
             itemManager.items.remove(at: index)

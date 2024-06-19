@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B72AA6842C20B41500022A5B /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72AA6832C20B41500022A5B /* DocumentPicker.swift */; };
 		B7878EA22C1FC04100316EE4 /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7878EA12C1FC04100316EE4 /* AppAppearance.swift */; };
 		B7878EA42C1FCC8E00316EE4 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7878EA32C1FCC8E00316EE4 /* ImagePickerView.swift */; };
 		B78835562C1DB11F00D24CB7 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78835552C1DB11F00D24CB7 /* Item.swift */; };
@@ -34,6 +35,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B72AA6832C20B41500022A5B /* DocumentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
 		B7878EA12C1FC04100316EE4 /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 		B7878EA32C1FCC8E00316EE4 /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		B78835552C1DB11F00D24CB7 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				B7C797C22C1C72C300A45639 /* SettingsView.swift */,
 				B7C797C02C1C33F100A45639 /* AddItemView.swift */,
 				B7878EA32C1FCC8E00316EE4 /* ImagePickerView.swift */,
+				B72AA6832C20B41500022A5B /* DocumentPicker.swift */,
 				B7C797BE2C1C33D300A45639 /* ItemManager.swift */,
 				B78835552C1DB11F00D24CB7 /* Item.swift */,
 				B7C797B22C1C30B500A45639 /* Assets.xcassets */,
@@ -192,6 +195,7 @@
 				B78835562C1DB11F00D24CB7 /* Item.swift in Sources */,
 				B7C797C12C1C33F100A45639 /* AddItemView.swift in Sources */,
 				B7C797C52C1C77BC00A45639 /* EditItemView.swift in Sources */,
+				B72AA6842C20B41500022A5B /* DocumentPicker.swift in Sources */,
 				B7878EA22C1FC04100316EE4 /* AppAppearance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

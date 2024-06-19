@@ -1,5 +1,6 @@
 import SwiftUI
 
+//아이콘 선택
 struct ImagePickerView: View {
     @Binding var selectedImageName: String
     var images: [String: [String]]
@@ -18,9 +19,10 @@ struct ImagePickerView: View {
                 ScrollView {
                     ForEach(images.keys.sorted(), id: \.self) { category in
                         Section(header: Text(category)
-                                    .font(.headline)
+                            .font(.system(size: 20))
+                            .bold()
                                     .foregroundColor(.primary)
-                                    .padding(.horizontal, 15)
+                                    .padding(20)
                                     .frame(maxWidth: .infinity, alignment: .leading)) {
                             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 20) {
                                 ForEach(images[category]!, id: \.self) { imageName in
