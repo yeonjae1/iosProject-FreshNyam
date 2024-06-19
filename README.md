@@ -58,12 +58,15 @@
 </div>
 
 
+
 - **네비게이션 바**
     - 왼쪽 상단: 검색, 그리드뷰/리스트뷰 보기, 공유하기, 불러오기 기능 사용 가능
     - 오른쪽 상단: 추가 버튼을 통해 아이템 추가 가능
+ 
 - **설정**
     - 카테고리 편집 가능
     - 라이트/다크 모드 변경 가능
+
 
 <div style="display: flex; flex-wrap: wrap;">
     <img src="https://github.com/yeonjae1/iosProject-FreshNyam/assets/100851180/50609b02-aec3-4462-9438-fd346124b647" width="250" />
@@ -80,7 +83,7 @@
 - **아이템 추가 기능**
     - 식품명, 카테고리, 아이콘 선택, 보관 장소, 소비기한을 선택 후 추가 가능
 - **아이콘 선택 기능**
-    - 다양한 아이콘 선택 및 검색 가능
+    - 다양한 아이콘(약 300개) 선택 및 검색 가능
       
 <div style="display: flex; flex-wrap: wrap;">
     <img src="https://github.com/yeonjae1/iosProject-FreshNyam/assets/100851180/e222a65b-710f-494a-ab75-723f66dda595" width="250" />
