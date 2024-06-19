@@ -18,6 +18,7 @@ struct EditItemView: View {
         if searchQuery.isEmpty {
             return itemManager.images
         } else {
+            var filtered = [String: [String]]()
             for (key, value) in itemManager.images {
                 let filteredValues = value.filter { $0.contains(searchQuery) }
                 if !filteredValues.isEmpty {
